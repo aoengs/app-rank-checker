@@ -420,29 +420,35 @@ export default function Home() {
         <p className="helper">{mode === "batch" ? "最多 30 个关键词 · 英文逗号分隔 · 报告按排名升序" : "无需登录 · 按 iPhone App Store 搜索页顺序 · 实时读取 Apple 公开数据"}</p>
 
         {/* Search history panel */}
-        {filteredHistory.length > 0 && (
-          <div className={`history-zone ${historyOpen ? "open" : ""}`}>
-            <button
-              className="history-toggle"
-              type="button"
-              onClick={() => setHistoryOpen((v) => !v)}
-              aria-expanded={historyOpen}
-            >
-              <span className="history-toggle-label">
-                <span className="history-icon" aria-hidden="true">⌘</span>
-                搜索历史
-              </span>
-              <span className="history-count">{filteredHistory.length}</span>
-              <span className={`history-chevron ${historyOpen ? "up" : ""}`} aria-hidden="true">▾</span>
-            </button>
+        <div className={`history-zone ${historyOpen ? "open" : ""}`}>
+          <button
+            className="history-toggle"
+            type="button"
+            onClick={() => setHistoryOpen((v) => !v)}
+            aria-expanded={historyOpen}
+          >
+            <span className="history-toggle-label">
+              <span className="history-icon" aria-hidden="true">⌘</span>
+              搜索历史
+            </span>
+            <span className="history-count">{filteredHistory.length}</span>
+            <span className={`history-chevron ${historyOpen ? "up" : ""}`} aria-hidden="true">▾</span>
+          </button>
 
-            {historyOpen && (
-              <div className="history-list">
-                <div className="history-list-head">
-                  <span>点击可快速复用</span>
-                  <button type="button" className="history-clear" onClick={clearHistory}>清空全部</button>
-                </div>
-                {filteredHistory.map((item) => (
+          {historyOpen && (
+            <div className="history-list">
+              <div className="history-list-head">
+                {filteredHistory.length > 0 ? (
+                  <>
+                    <span>点击任意记录，快速填入对应关键词和地区</span>
+                    <button type="button" className="history-clear" onClick={clearHistory}>清空全部</button>
+                  </>
+                ) : (
+                  <span>暂无{mode === "single" ? "单关键词" : "批量"}搜索记录，查询后自动保存在此</span>
+                )}
+              </div>
+              {filteredHistory.length > 0 ? (
+                filteredHistory.map((item) => (
                   <button
                     key={item.id}
                     type="button"
@@ -472,11 +478,21 @@ export default function Home() {
                       ×
                     </button>
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                ))
+              ) : (
+                <div className="history-empty">
+                  <span className="history-empty-icon">⌘</span>
+                  <p>每次查询后自动保存关键词、目标 App 和地区<br />点击历史记录即可一键复用，无需重复输入</p>
+                </div>
+              )}
+              {filteredHistory.length > 0 && (
+                <div className="history-list-foot">
+                  <span>共 {filteredHistory.length} 条{mode === "single" ? "单关键词" : "批量"}记录 · 最多保留 30 条</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </section>
 
       <section className={`result-zone ${searched || batchReport || error || loading ? "visible" : ""}`} aria-live="polite">
