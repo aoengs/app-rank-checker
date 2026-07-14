@@ -5,7 +5,6 @@ import { downloadBatchRankReport, downloadSingleRankReport } from "@/lib/report-
 import {
   resolveTargetApp,
   searchKeyword,
-  SUPPORTED_STORES,
 } from "@/lib/app-store-search-client";
 import type { AppResult } from "@/lib/app-store-search-client";
 
