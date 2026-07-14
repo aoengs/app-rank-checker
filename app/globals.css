@@ -44,8 +44,34 @@ main {
 .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-family: "SF Mono", "Cascadia Code", "Menlo", monospace; font-weight: 800; transform: rotate(-3deg); }
 .nav-github { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 6px; color: var(--muted); transition: color .15s, background .15s; }
 .nav-github:hover { color: var(--ink); background: var(--paper-deep); }
-.nav-help { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--muted); font: 800 16px "SF Mono", "Cascadia Code", "Menlo", monospace; cursor: pointer; transition: all .15s; }
-.nav-help:hover { color: #fff; background: var(--acid); border-color: var(--acid); }
+.nav-help {
+  position: relative; display: grid; place-items: center; width: 36px; height: 36px;
+  border: 1px solid var(--acid); border-radius: 50%;
+  background: transparent; color: var(--acid);
+  font: 800 16px "SF Mono", "Cascadia Code", "Menlo", monospace;
+  cursor: pointer; transition: background .15s, color .15s;
+  animation: help-pulse 2.4s ease-in-out infinite;
+}
+.nav-help::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  border: 1px solid var(--acid); opacity: 0;
+  animation: help-ring 2.4s ease-in-out infinite;
+}
+.nav-help:hover {
+  color: #fff; background: var(--acid);
+  animation: none;
+}
+.nav-help:hover::after { animation: none; opacity: 0; }
+
+@keyframes help-pulse {
+  0%, 70%, 100% { transform: scale(1); }
+  80% { transform: scale(1.08); }
+}
+@keyframes help-ring {
+  0%, 60%, 100% { opacity: 0; transform: scale(.9); }
+  70% { opacity: .6; }
+  80% { opacity: 0; transform: scale(1.15); }
+}
 
 /* ── Tour overlay ── */
 .tour-root { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
