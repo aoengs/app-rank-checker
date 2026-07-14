@@ -1,4 +1,4 @@
-# 🔍 App 排名侦测站
+# 🔍 App Store 实时排名侦测
 
 > 按 iPhone App Store 真实搜索顺序检查关键词排名。你的 App，排在第几位？
 
@@ -9,7 +9,7 @@
 
 ## 简介
 
-App 排名侦测站是一个轻量级 ASO 关键词排名查询工具，直接抓取 **Apple App Store 搜索页**，解析内嵌的 `serialized-server-data` JSON，输出与手机端完全一致的排名结果。
+App Store 实时排名侦测是一个轻量级 ASO 关键词排名查询工具，直接抓取 **Apple App Store 搜索页**，解析内嵌的 `serialized-server-data` JSON，输出与手机端完全一致的排名结果。
 
 与 iTunes Search API 不同，本工具读取的是 iPhone 用户实际看到的搜索结果顺序——包含首页 items + 分页数据，确保排名数据准确可靠。
 
