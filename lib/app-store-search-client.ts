@@ -92,22 +92,16 @@ function parseStorefrontOrder(html: string) {
   };
 }
 
+const PROXY = "https://app-rank-proxy.tattered-opossum.workers.dev";
+
 // CORS proxy: browser can't fetch apps.apple.com directly
-function proxyUrl(target: string) {
-  return `https://corsproxy.io/?${encodeURIComponent(target)}`;
+function proxyUrl(target: string, country: string) {
+  return `${PROXY}/?url=${encodeURIComponent(target)}&country=${country}`;
 }
 
 async function fetchStorefront(term: string, country: string) {
   const url = `https://apps.apple.com/${country}/iphone/search?term=${encodeURIComponent(term)}`;
-  const response = await fetch(proxyUrl(url), {
-    headers: {
-      "x-cors-headers": JSON.stringify({
-        "accept-language": country === "cn" ? "zh-CN,zh;q=0.9" : "en-US,en;q=0.8",
-        "user-agent":
-          "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
-      }),
-    },
-  });
+  const response = await fetch(proxyUrl(url, country));
 
   if (!response.ok) {
     throw new Error(`Apple 搜索服务暂时不可用（${response.status}）。`);

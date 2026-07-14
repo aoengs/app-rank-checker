@@ -1,0 +1,4 @@
+name = "app-rank-proxy"
+main = "index.ts"
+compatibility_date = "2025-07-14"
+workers_dev = true
