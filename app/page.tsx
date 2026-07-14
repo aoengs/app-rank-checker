@@ -7,6 +7,7 @@ import {
   searchKeyword,
 } from "@/lib/app-store-search-client";
 import type { AppResult } from "@/lib/app-store-search-client";
+import Tour, { type TourStep } from "./tour";
 
 type MatchResult = {
   app: AppResult;
@@ -116,6 +117,10 @@ export default function Home() {
   // History state — lazy init from localStorage
   const [history, setHistory] = useState<HistoryItem[]>(() => loadHistory());
   const [historyOpen, setHistoryOpen] = useState(false);
+
+  // Tour state
+  const [tourActive, setTourActive] = useState(false);
+  const [tourStep, setTourStep] = useState(0);
 
   const storeLabel = STORES.find((store) => store.code === country)?.label ?? country;
   const batchKeywords = [...new Set(
@@ -334,6 +339,35 @@ export default function Home() {
     window.dispatchEvent(event);
   }, []);
 
+  // ── Tour ──
+  const tourSteps: TourStep[] = [
+    {
+      target: "#keyword",
+      title: "输入搜索关键词",
+      body: "在此输入 ASO 关键词，例如「AI财报」「安全边际」等。这是用户在 App Store 搜索时输入的关键词。",
+      placement: "bottom",
+    },
+    {
+      target: "#target",
+      title: "填入目标 App 名称",
+      body: "输入你想查询排名的 App 完整名称。系统会用此名称去 Apple 搜索页中找到对应的 App。",
+      placement: "bottom",
+    },
+    {
+      target: "#country",
+      title: "选择 App Store 地区",
+      body: "切换不同的地区，查看目标 App 在中国大陆、美国、日本等 7 个地区的排名情况。",
+      placement: "bottom",
+    },
+    {
+      target: ".search-button",
+      title: "点击查询排名",
+      body: "点击按钮即可实时抓取 iPhone App Store 搜索结果。查询完成后可查看排名、前十快照，并下载 PDF 报告。",
+      placement: "left",
+    },
+  ];
+  const closeTour = () => { setTourActive(false); setTourStep(0); };
+
   return (
     <main>
       <nav className="nav" aria-label="主导航">
@@ -344,6 +378,9 @@ export default function Home() {
         <a className="nav-github" href="https://github.com/aoengs" target="_blank" rel="noreferrer" aria-label="GitHub">
           <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
         </a>
+        <button type="button" className="nav-help" onClick={() => { setMode("single"); setTourActive(true); setTourStep(0); }} aria-label="使用引导">
+          ?
+        </button>
       </nav>
 
       <section className="hero" id="top">
@@ -714,6 +751,7 @@ export default function Home() {
         <p>独立工具，与 Apple Inc. 无关联。</p>
         <span>© 2026</span>
       </footer>
+      <Tour steps={tourSteps} active={tourActive} stepIndex={tourStep} onNext={() => { if (tourStep < tourSteps.length - 1) setTourStep((s) => s + 1); else closeTour(); }} onPrev={() => setTourStep((s) => s - 1)} onSkip={closeTour} />
     </main>
   );
 }
