@@ -339,9 +339,8 @@ export default function Home() {
       <nav className="nav" aria-label="主导航">
         <a className="brand" href="#top" aria-label="App Store 实时排名侦测首页">
           <span className="brand-mark" aria-hidden="true">R</span>
-          <span>App Store 实时排名侦测</span>
+          <span className="brand-text">App Store<i className="brand-dot" />实时排名侦测</span>
         </a>
-        <span className="live-pill"><i /> Apple 实时数据</span>
         <a className="nav-github nav-star" href="https://github.com/aoengs/app-rank-checker" target="_blank" rel="noreferrer" aria-label="Star on GitHub">
           <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25"/></svg>
         </a>

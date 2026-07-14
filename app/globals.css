@@ -39,9 +39,9 @@ main {
   backdrop-filter: blur(12px);
 }
 .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-size: 15px; font-weight: 760; letter-spacing: -.02em; }
+.brand-text { display: inline-flex; align-items: center; gap: 8px; }
+.brand-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #24a15a; box-shadow: 0 0 0 5px rgba(36,161,90,.13); animation: pulse 2s infinite; }
 .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-family: "SF Mono", "Cascadia Code", "Menlo", monospace; font-weight: 800; transform: rotate(-3deg); }
-.live-pill { display: inline-flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 650; letter-spacing: .03em; }
-.live-pill i { display: block; width: 8px; height: 8px; border-radius: 50%; background: #24a15a; box-shadow: 0 0 0 5px rgba(36,161,90,.13); animation: pulse 2s infinite; }
 .nav-github { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 6px; color: var(--muted); transition: color .15s, background .15s; }
 .nav-github:hover { color: var(--ink); background: var(--paper-deep); }
 .nav-star { color: #c9a227; }
@@ -310,7 +310,6 @@ footer span:last-child { text-align: right; }
 @media (max-width: 620px) {
   .nav { height: 65px; padding: 0 18px; }
   .brand-mark { width: 30px; height: 30px; }
-  .live-pill { font-size: 0; }
   .hero, .result-zone, .notes { margin-left: 16px; margin-right: 16px; }
   .hero { padding: 48px 0 34px; }
   h1 { font-size: clamp(54px, 18vw, 74px); }
