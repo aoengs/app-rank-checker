@@ -1,7 +1,7 @@
 export default {
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
-    let target = url.searchParams.get("url");
+    const target = url.searchParams.get("url") ?? "";
     if (!target) return new Response("missing ?url=", { status: 400 });
 
     // Only allow apps.apple.com

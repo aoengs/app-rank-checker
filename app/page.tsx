@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { downloadBatchRankReport, downloadSingleRankReport } from "@/lib/report-pdf";
 import {
   resolveTargetApp,
@@ -29,6 +29,17 @@ type BatchResponse = {
   error?: string;
 };
 
+type HistoryItem = {
+  id: string;
+  mode: SearchMode;
+  keywords: string;
+  target: string;
+  country: string;
+  storeLabel: string;
+  rank: number | null;
+  timestamp: number;
+};
+
 const STORES = [
   { code: "cn", label: "中国大陆" },
   { code: "hk", label: "中国香港" },
@@ -38,6 +49,41 @@ const STORES = [
   { code: "sg", label: "新加坡" },
   { code: "gb", label: "英国" },
 ];
+
+const HISTORY_KEY = "app-rank-history";
+const HISTORY_MAX = 30;
+
+function loadHistory(): HistoryItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as HistoryItem[];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(items: HistoryItem[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, HISTORY_MAX)));
+  } catch { /* quota exceeded — silently drop oldest */ }
+}
+
+function dateLabel(ts: number): string {
+  const now = new Date();
+  const d = new Date(ts);
+  const diffMs = now.getTime() - d.getTime();
+  const diffMin = Math.floor(diffMs / 60_000);
+  if (diffMin < 1) return "刚刚";
+  if (diffMin < 60) return `${diffMin} 分钟前`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr} 小时前`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay < 7) return `${diffDay} 天前`;
+  return d.toLocaleDateString("zh-CN", { month: "short", day: "numeric" });
+}
 
 function Rating({ value, count }: { value?: number; count?: number }) {
   if (!value) return <span className="muted">暂无评分</span>;
@@ -67,6 +113,10 @@ export default function Home() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
 
+  // History state — lazy init from localStorage
+  const [history, setHistory] = useState<HistoryItem[]>(() => loadHistory());
+  const [historyOpen, setHistoryOpen] = useState(false);
+
   const storeLabel = STORES.find((store) => store.code === country)?.label ?? country;
   const batchKeywords = [...new Set(
     batchInput.split(",").map((item) => item.trim()).filter(Boolean),
@@ -84,6 +134,54 @@ export default function Home() {
         / rankedBatchResults.length,
     )
     : null;
+
+  // Filter history by current mode
+  const filteredHistory = useMemo(
+    () => history.filter((item) => item.mode === mode),
+    [history, mode],
+  );
+
+  const addToHistory = useCallback((item: Omit<HistoryItem, "id" | "timestamp">) => {
+    setHistory((prev) => {
+      const key = `${item.keywords}::${item.target}::${item.country}`;
+      const filtered = prev.filter((h) => `${h.keywords}::${h.target}::${h.country}` !== key);
+      const next: HistoryItem[] = [
+        { ...item, id: crypto.randomUUID(), timestamp: Date.now() },
+        ...filtered,
+      ];
+      saveHistory(next);
+      return next;
+    });
+  }, []);
+
+  const removeHistoryItem = useCallback((id: string) => {
+    setHistory((prev) => {
+      const next = prev.filter((h) => h.id !== id);
+      saveHistory(next);
+      return next;
+    });
+  }, []);
+
+  const clearHistory = useCallback(() => {
+    setHistory([]);
+    saveHistory([]);
+  }, []);
+
+  function applyHistory(item: HistoryItem) {
+    if (item.mode === "single") {
+      setMode("single");
+      setKeyword(item.keywords);
+      setTarget(item.target);
+      setCountry(item.country);
+    } else {
+      setMode("batch");
+      setBatchInput(item.keywords);
+      setTarget(item.target);
+      setCountry(item.country);
+    }
+    setHistoryOpen(false);
+    clearOutput();
+  }
 
   function clearOutput() {
     setSearched(false);
@@ -157,6 +255,10 @@ export default function Home() {
           return a.rank - b.rank;
         });
 
+        const keywordsStr = batchKeywords.join(",");
+        const bestRank = batchResults.find((r) => r.rank !== null)?.rank ?? null;
+        addToHistory({ mode: "batch", keywords: keywordsStr, target: target.trim(), country, storeLabel, rank: bestRank });
+
         setBatchReport({
           targetApp,
           results: batchResults,
@@ -172,6 +274,8 @@ export default function Home() {
         country,
         targetApp?.trackId ?? null,
       );
+
+      addToHistory({ mode: "single", keywords: keyword.trim(), target: target.trim(), country, storeLabel, rank: rankedResult.rank });
 
       setResults(rankedResult.results);
       setResultCount(rankedResult.resultCount);
@@ -314,6 +418,65 @@ export default function Home() {
         </form>
 
         <p className="helper">{mode === "batch" ? "最多 30 个关键词 · 英文逗号分隔 · 报告按排名升序" : "无需登录 · 按 iPhone App Store 搜索页顺序 · 实时读取 Apple 公开数据"}</p>
+
+        {/* Search history panel */}
+        {filteredHistory.length > 0 && (
+          <div className={`history-zone ${historyOpen ? "open" : ""}`}>
+            <button
+              className="history-toggle"
+              type="button"
+              onClick={() => setHistoryOpen((v) => !v)}
+              aria-expanded={historyOpen}
+            >
+              <span className="history-toggle-label">
+                <span className="history-icon" aria-hidden="true">⌘</span>
+                搜索历史
+              </span>
+              <span className="history-count">{filteredHistory.length}</span>
+              <span className={`history-chevron ${historyOpen ? "up" : ""}`} aria-hidden="true">▾</span>
+            </button>
+
+            {historyOpen && (
+              <div className="history-list">
+                <div className="history-list-head">
+                  <span>点击可快速复用</span>
+                  <button type="button" className="history-clear" onClick={clearHistory}>清空全部</button>
+                </div>
+                {filteredHistory.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="history-item"
+                    onClick={() => applyHistory(item)}
+                    title={`关键词：${item.keywords} · 目标：${item.target} · ${item.storeLabel}`}
+                  >
+                    <div className="history-item-main">
+                      <span className="history-keyword">{item.keywords.length > 24 ? item.keywords.slice(0, 24) + "…" : item.keywords}</span>
+                      <span className="history-target">{item.target}</span>
+                      <span className="history-store">{item.storeLabel}</span>
+                    </div>
+                    <div className="history-item-meta">
+                      {item.rank !== null ? (
+                        <span className="history-rank">#{item.rank}</span>
+                      ) : (
+                        <span className="history-rank empty">—</span>
+                      )}
+                      <span className="history-time">{dateLabel(item.timestamp)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="history-item-delete"
+                      onClick={(e) => { e.stopPropagation(); removeHistoryItem(item.id); }}
+                      aria-label={`删除记录：${item.keywords}`}
+                    >
+                      ×
+                    </button>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       <section className={`result-zone ${searched || batchReport || error || loading ? "visible" : ""}`} aria-live="polite">
@@ -440,7 +603,7 @@ export default function Home() {
             <div className="not-found-icon" aria-hidden="true">?</div>
             <div>
               <span className="result-label">未找到目标 App</span>
-              <h2>{targetFound ? `当前 ${resultCount} 条结果中未出现“${target}”` : `没有匹配到“${target}”`}</h2>
+              <h2>{targetFound ? `当前 ${resultCount} 条结果中未出现&ldquo;${target}&rdquo;` : `没有匹配到&ldquo;${target}&rdquo;`}</h2>
               <p>{targetFound ? "Apple 已识别目标 App，但它没有出现在当前搜索结果范围内。" : "请检查名称是否准确，或尝试目标 App 的完整名称、品牌名。"}</p>
             </div>
           </div>
@@ -485,7 +648,7 @@ export default function Home() {
       <section className="notes">
         <div className="note-number">02</div>
         <div>
-          <h2>关于“排名”的说明</h2>
+          <h2>关于&ldquo;排名&rdquo;的说明</h2>
           <p>本工具按所选地区 Apple iPhone 搜索页返回的结果顺序计算位置，可单独查询，也可一次生成最多 30 个关键词的升序报告。广告、账户个性化、缓存和 Apple 的实时实验仍可能让个别设备看到不同结果；建议在同一地区、同一时间复查。</p>
         </div>
         <div className="note-stamp">PUBLIC DATA<br />NO LOGIN</div>

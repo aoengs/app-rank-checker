@@ -74,6 +74,62 @@ h1 em { color: var(--acid); font-style: normal; }
 .search-button > span:first-child:not(.spinner) { font-size: 21px; }
 .helper { margin: 20px 0 0 2px; color: var(--muted); font-family: "SF Mono", "Cascadia Code", "Menlo", monospace; font-size: 11px; letter-spacing: .02em; }
 
+/* ── Search history ── */
+.history-zone { margin-top: 24px; border: 1px solid var(--ink); background: #fff; }
+.history-toggle {
+  width: 100%; display: flex; align-items: center; gap: 12px;
+  padding: 13px 17px; border: 0; background: transparent;
+  cursor: pointer; font-size: 13px; font-weight: 700;
+}
+.history-toggle:hover { background: var(--paper); }
+.history-toggle-label { display: flex; align-items: center; gap: 9px; }
+.history-icon { width: 28px; height: 28px; display: grid; place-items: center; background: var(--acid); color: #fff; font: 600 13px "SF Mono", "Cascadia Code", "Menlo", monospace; }
+.history-count { min-width: 22px; height: 22px; display: inline-grid; place-items: center; padding: 0 6px; background: var(--ink); color: #fff; border-radius: 999px; font: 600 10px "SF Mono", "Cascadia Code", "Menlo", monospace; margin-left: auto; }
+.history-chevron { font-size: 11px; transition: transform .2s; }
+.history-chevron.up { transform: rotate(180deg); }
+
+.history-list { border-top: 1px solid var(--ink); }
+.history-list-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 17px; border-bottom: 1px solid var(--line);
+  color: var(--muted); font-size: 11px; font-family: "SF Mono", "Cascadia Code", "Menlo", monospace;
+}
+.history-clear { border: 0; background: transparent; color: var(--acid); font-weight: 700; font-size: 11px; cursor: pointer; }
+.history-clear:hover { text-decoration: underline; }
+
+.history-item {
+  width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center; gap: 10px; padding: 10px 17px;
+  border: 0; border-bottom: 1px solid var(--line);
+  background: transparent; text-align: left; cursor: pointer;
+  transition: background .12s;
+}
+.history-item:last-child { border-bottom: 0; }
+.history-item:hover { background: #fff8f5; }
+.history-item-main { min-width: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.history-keyword {
+  display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 3px 8px; background: var(--paper); border: 1px solid var(--line);
+  font: 600 12px "SF Mono", "Cascadia Code", "Menlo", monospace; color: var(--acid);
+}
+.history-target { font-size: 13px; font-weight: 650; }
+.history-store { font-size: 11px; color: var(--muted); }
+.history-item-meta { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.history-rank { min-width: 40px; height: 24px; display: inline-grid; place-items: center; background: var(--acid); color: #fff; font: 800 12px "SF Mono", "Cascadia Code", "Menlo", monospace; }
+.history-rank.empty { background: var(--paper-deep); color: var(--muted); font-weight: 600; }
+.history-time { font-size: 11px; color: var(--muted); }
+.history-item-delete {
+  width: 28px; height: 28px; display: grid; place-items: center;
+  border: 0; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer;
+  border-radius: 4px; transition: background .12s;
+}
+.history-item-delete:hover { background: var(--paper-deep); color: var(--acid); }
+
+@media (max-width: 620px) {
+  .history-item { grid-template-columns: 1fr auto; }
+  .history-item-meta { grid-column: 1 / -1; justify-content: flex-start; }
+}
+
 .batch-search-panel { grid-template-columns: 1.4fr .8fr auto; }
 .batch-keywords-field { grid-column: 1 / -1; min-height: 132px; padding: 16px 18px 12px; border-right: 0; border-bottom: 1px solid var(--ink); }
 .batch-field-heading { display: flex; justify-content: space-between; gap: 15px; }
