@@ -457,7 +457,7 @@ export default function Home() {
                     title={`关键词：${item.keywords} · 目标：${item.target} · ${item.storeLabel}`}
                   >
                     <div className="history-item-main">
-                      <span className="history-keyword">{item.keywords.length > 24 ? item.keywords.slice(0, 24) + "…" : item.keywords}</span>
+                      <span className="history-keyword">{item.keywords}</span>
                       <span className="history-target">{item.target}</span>
                       <span className="history-store">{item.storeLabel}</span>
                     </div>

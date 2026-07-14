@@ -108,9 +108,9 @@ h1 em { color: var(--acid); font-style: normal; }
 .history-item:hover { background: #fff8f5; }
 .history-item-main { min-width: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .history-keyword {
-  display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  padding: 3px 8px; background: var(--paper); border: 1px solid var(--line);
-  font: 600 12px "SF Mono", "Cascadia Code", "Menlo", monospace; color: var(--acid);
+  display: inline; padding: 2px 8px; background: var(--paper); border: 1px solid var(--line);
+  font: 600 12px/1.8 "SF Mono", "Cascadia Code", "Menlo", monospace; color: var(--acid);
+  word-break: break-all;
 }
 .history-target { font-size: 13px; font-weight: 650; }
 .history-store { font-size: 11px; color: var(--muted); }
