@@ -271,6 +271,16 @@ h1 em { color: var(--acid); font-style: normal; }
 .single-report-action p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
 .download-error { margin: 10px 0 0; padding: 10px 13px; border-left: 4px solid #b42318; background: #fff1ef; color: #8f1d15; font-size: 12px; font-weight: 650; }
 
+/* ── Usage guide ── */
+.guide { max-width: 1180px; margin: 0 auto 24px; display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 28px; align-items: start; padding: 36px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.guide-number { width: 55px; height: 48px; display: grid; place-items: center; background: var(--acid); color: white; font: 700 13px "SF Mono", "Cascadia Code", "Menlo", monospace; }
+.guide-body h2 { margin: 0 0 28px; font-size: 22px; letter-spacing: -.03em; }
+.guide-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.guide-step { display: flex; gap: 14px; align-items: flex-start; }
+.guide-step-num { flex-shrink: 0; width: 28px; height: 28px; display: grid; place-items: center; border: 2px solid var(--ink); font: 800 12px "SF Mono", "Cascadia Code", "Menlo", monospace; }
+.guide-step strong { display: block; font-size: 14px; margin-bottom: 6px; }
+.guide-step p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
 .notes { max-width: 1180px; margin: 15px auto 90px; display: grid; grid-template-columns: 90px minmax(0, 1fr) 130px; gap: 28px; align-items: start; padding: 36px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .note-number { width: 55px; height: 48px; display: grid; place-items: center; background: var(--ink); color: white; font: 700 13px "SF Mono", "Cascadia Code", "Menlo", monospace; }
 .notes h2 { margin: 0 0 10px; font-size: 22px; letter-spacing: -.03em; }
@@ -285,7 +295,7 @@ footer span:last-child { text-align: right; }
 @keyframes pulse { 50% { box-shadow: 0 0 0 2px rgba(36,161,90,.1); } }
 
 @media (max-width: 1228px) {
-  .hero, .result-zone, .notes { margin-left: 24px; margin-right: 24px; }
+  .hero, .result-zone, .notes, .guide { margin-left: 24px; margin-right: 24px; }
 }
 @media (max-width: 900px) {
   .hero { padding-top: 64px; }
@@ -304,11 +314,12 @@ footer span:last-child { text-align: right; }
   .report-summary { grid-template-columns: repeat(2, 1fr); }
   .report-summary > div:nth-child(2) { border-right: 0; }
   .report-summary > div:nth-child(-n+2) { border-bottom: 1px solid var(--ink); }
+  .guide-steps { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 620px) {
   .nav { height: 65px; padding: 0 18px; }
   .brand-mark { width: 30px; height: 30px; }
-  .hero, .result-zone, .notes { margin-left: 16px; margin-right: 16px; }
+  .hero, .result-zone, .notes, .guide { margin-left: 16px; margin-right: 16px; }
   .hero { padding: 48px 0 34px; }
   h1 { font-size: clamp(54px, 18vw, 74px); }
   .lede { margin: 25px 0 32px; font-size: 16px; }
@@ -350,6 +361,9 @@ footer span:last-child { text-align: right; }
   .single-report-action .download-button { width: 100%; }
   .notes { grid-template-columns: 55px 1fr; margin-bottom: 50px; }
   .note-stamp { display: none; }
+  .guide { grid-template-columns: 55px 1fr; padding: 28px 0; }
+  .guide-steps { grid-template-columns: 1fr; }
+  .guide-number { width: 40px; height: 38px; }
   footer { grid-template-columns: 1fr auto; padding: 0 18px; }
   footer p { display: none; }
 }

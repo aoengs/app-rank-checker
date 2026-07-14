@@ -663,6 +663,43 @@ export default function Home() {
         )}
       </section>
 
+      <section className="guide">
+        <div className="guide-number">01</div>
+        <div className="guide-body">
+          <h2>使用引导</h2>
+          <div className="guide-steps">
+            <div className="guide-step">
+              <span className="guide-step-num">1</span>
+              <div>
+                <strong>选择查询模式</strong>
+                <p>切换「单关键词」精确排查，或「批量关键词」一次检查最多 30 个词。</p>
+              </div>
+            </div>
+            <div className="guide-step">
+              <span className="guide-step-num">2</span>
+              <div>
+                <strong>填入关键词与目标 App</strong>
+                <p>输入 ASO 关键词和精确的 App 名称，选择对应 App Store 地区。</p>
+              </div>
+            </div>
+            <div className="guide-step">
+              <span className="guide-step-num">3</span>
+              <div>
+                <strong>查询排名</strong>
+                <p>点击按钮，系统抓取 iPhone App Store 实时搜索页并返回精确排名。</p>
+              </div>
+            </div>
+            <div className="guide-step">
+              <span className="guide-step-num">4</span>
+              <div>
+                <strong>下载 PDF 报告</strong>
+                <p>结果下方可一键生成含排名结论与前 10 位搜索快照的 PDF 报告。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="notes">
         <div className="note-number">02</div>
         <div>
